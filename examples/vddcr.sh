@@ -1,8 +1,12 @@
 #!/bin/bash
 
 # value-domain-dns-cert-register
-# vddcr.sh <value-domain-api-key> <root-domain> <ttl>
-# ttlはオプションです
+# vddcr.sh <value-domain-api-key> <root-domain> <optional:ttl>
+# <optional:ttl>はオプションなので省いてもよい
+# 120未満を指定した場合、120として解釈、無指定の場合はAPIから来た値を割り当てるが
+# APIから来た値が120未満の場合、120を割り当てる
+# これはValue-Domain APIの仕様上、120未満を指定すると、3600が割り当てられるため
+# 最短の120を割り当てるようにしている
 
 source vd-dns-util.sh
 
