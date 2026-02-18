@@ -1,6 +1,6 @@
-# Value-Domain API Utility for Bash
+# Value-Domain DNS API Utility for Bash
 
-[Value-DomainのDNS API](https://www.value-domain.com/api/doc/domain/#tag/DNS)を叩くためのユーティリティ関数群。
+[Value-DomainのDNS API](https://www.value-domain.com/api/doc/domain/#tag/DNS)をBashのshellscriptから叩くためのユーティリティ関数群。
 
 ## [`./vd-dns-util.sh`] ユーティリティ関数群の本体
 
