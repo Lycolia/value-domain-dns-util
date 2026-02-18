@@ -207,18 +207,16 @@ Claude Opus 4.6のレビューによるとFreeBSD系では動かない可能性�
 
 ### 使い方
 
-certbotがない場合`sudo apt install certbot`でインストールできる。
-
-1. `./vd-dcr.sh`をインストールする
+1. certbotがない場合インストールする
    ```bash
-   sudo ./install.sh
+   sudo apt install certbot
    ```
-2. 証明書を作る
+2. 証明書を作るためのコマンドを叩く
    ```bash
    sudo certbot certonly --manual -n \
      --preferred-challenges dns \
      --agree-tos -m <your-email> \
-     --manual-auth-hook "/usr/local/sbin/vd-dcr.sh <value-domain-api-key> <root-domain> <optional:ttl>" \
+     --manual-auth-hook "/path/to/vd-dcr.sh <value-domain-api-key> <root-domain> <optional:ttl>" \
      -d <target-domain>
    ```
    **記述例**
@@ -226,10 +224,15 @@ certbotがない場合`sudo apt install certbot`でインストールできる�
    sudo certbot certonly --manual -n \
      --preferred-challenges dns \
      --agree-tos -m postmaster@example.com \
-     --manual-auth-hook "/usr/local/sbin/vd-dcr.sh x9FwKp3RmT7vLnYq2sUcBj6hXoDiA8gZeJrN4aMbQV5tWlCy0EdGuHfS1oIxP9wKmR7nTvLjYq3sUcBp6hXoZiD2gJeKr4aMbQkV example.com" \
+     --manual-auth-hook "/path/to/vd-dcr.sh x9FwKp3RmT7vLnYq2sUcBj6hXoDiA8gZeJrN4aMbQV5tWlCy0EdGuHfS1oIxP9wKmR7nTvLjYq3sUcBp6hXoZiD2gJeKr4aMbQkV example.com" \
      -d hoge.example.com
    ```
-3. crontabに上記のコマンドを登録して定期実行する
+
+apt経由でインストールした場合、以降は勝手に自動更新が走るはず。
+
+何故なら、`/etc/cron.d/certbot`や`cat /usr/lib/systemd/system/certbot.service`には定期的な更新処理が記述されており、これらは恐らく`/etc/letsencrypt/renewal/*.conf`を参照して更新しているからだ。
+
+`/etc/letsencrypt/renewal/*.conf`には、過去に実行した証明書更新用の設定が書き込まれており、態々毎回フルパラメーターを指定せずとも動くようになっているものと思われる。
 
 ### 既知の問題
 
