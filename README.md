@@ -207,9 +207,9 @@ Claude Opus 4.6のレビューによるとFreeBSD系では動かない可能性�
 
 ### 使い方
 
-1. certbotがない場合インストールする
+1. certbotやjqがない場合インストールする
    ```bash
-   sudo apt install certbot
+   sudo apt install certbot jq
    ```
 2. 証明書を作るためのコマンドを叩く
    ```bash
