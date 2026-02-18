@@ -2,17 +2,13 @@
 
 [Value-DomainのDNS API](https://www.value-domain.com/api/doc/domain/#tag/DNS)を叩くためのユーティリティ関数群。
 
-## 中身
+## [`./vd-dns-util.sh`] ユーティリティ関数群の本体
 
-### ./vd-dns-util.sh
+`./examples/vd-dcr.sh`にあるように`source vd-dns-util.sh`して利用する想定。
 
-ユーティリティ関数群の本体。
+### 実装関数
 
-`./examples/vddcr.sh`にあるように`source vd-dns-util.sh`して利用する想定。
-
-#### 実装関数
-
-##### request_get_records()
+#### `request_get_records()`
 
 Value-DomainのDNS APIに指定ドメインのDNSレコード設定の問い合わせを行い当該ドメインのDNSレコード設定を取得する。
 
@@ -53,7 +49,7 @@ ttl=$(echo -E "$get_respbody" | jq -r '.results.ttl')
 ns_type=$(echo -E "$get_respbody" | jq '.results.ns_type')
 ```
 
-##### find_first_record()
+#### `find_first_record()`
 
 Value-DomainのDNSレコードのレコードを検索し、一致した先頭一件を取得する。
 
@@ -82,7 +78,7 @@ else
 fi
 ```
 
-##### append_record()
+#### `append_record()`
 
 Value-DomainのDNSレコードデータ（records）にレコードを追加する。
 
@@ -107,7 +103,7 @@ Value-DomainのDNSレコードデータ（records）にレコードを追加す�
 new_records=$(append_record "$records" "$record")
 ```
 
-##### replace_record()
+#### `replace_record()`
 
 Value-DomainのDNSレコードデータ（records）にあるレコードを置換する。
 
@@ -134,7 +130,7 @@ new_record="txt $CERTBOT_DOMAIN \\\"$CERTBOT_VALIDATION\\\""
 new_records=$(replace_record "$source_records" "txt $CERTBOT_DOMAIN" "$new_record")
 ```
 
-##### adjust_ttl()
+#### `adjust_ttl()`
 
 ttlが120未満であれば120に補正し、そうでなければそのままを返す。
 
@@ -162,7 +158,7 @@ source_ttl=130
 adjusted_ttl=$(adjust_ttl $source_ttl)
 ```
 
-##### request_update_records()
+#### `request_update_records()`
 
 Value-DomainのDNS APIに指定ドメインのDNSレコード更新の要求行い当該ドメインのDNSレコード設定を更新する。
 
@@ -199,23 +195,51 @@ if [[ $update_respcode -ne 200 ]]; then
 fi
 ```
 
-### ./examples/vddcr.sh
+## [`./vd-dcr.sh`] Value-DomainでCertbotのDNS認証を自動化するためのツール
 
-実装サンプルで、中身はValue-DomainでCertbotのDNS認証を自動化するためのツール。
+`./vd-dns-util.sh`を利用した実装サンプルでもある。
 
-```bash
-sudo certbot certonly --manual -n \
-  --preferred-challenges dns \
-  --agree-tos -m <your-email> \
-  --manual-auth-hook "vddcr <value-domain-api-key> <root-domain> <optional:ttl>" \
-  -d <target-domain>
-```
+### 動作確認環境
 
-### test_vd-dns-util.bats
+- Ubuntu 24.04.3 LTS, certbot 2.9.0
+
+Claude Opus 4.6のレビューによるとFreeBSD系では動かない可能性があります。
+
+### 使い方
+
+certbotがない場合`sudo apt install certbot`でインストールできる。
+
+1. `./vd-dcr.sh`をインストールする
+   ```bash
+   sudo ./install.sh
+   ```
+2. 証明書を作る
+   ```bash
+   sudo certbot certonly --manual -n \
+     --preferred-challenges dns \
+     --agree-tos -m <your-email> \
+     --manual-auth-hook "/usr/local/sbin/vd-dcr.sh <value-domain-api-key> <root-domain> <optional:ttl>" \
+     -d <target-domain>
+   ```
+   **記述例**
+   ```bash
+   sudo certbot certonly --manual -n \
+     --preferred-challenges dns \
+     --agree-tos -m postmaster@example.com \
+     --manual-auth-hook "/usr/local/sbin/vd-dcr.sh x9FwKp3RmT7vLnYq2sUcBj6hXoDiA8gZeJrN4aMbQV5tWlCy0EdGuHfS1oIxP9wKmR7nTvLjYq3sUcBp6hXoZiD2gJeKr4aMbQkV example.com" \
+     -d hoge.example.com
+   ```
+3. crontabに上記のコマンドを登録して定期実行する
+
+### 既知の問題
+
+1. ワイルドカードドメインに対応していない（それっぽいコードは書いているが、未検証）
+
+## test_vd-dns-util.bats
 
 テストファイル。
 
-## テストの実行方法
+### テストの実行方法
 
 1. Bash Automated Testing Systemのインストール
    ```bash
