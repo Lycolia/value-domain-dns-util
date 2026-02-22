@@ -2,6 +2,8 @@
 
 [Value-DomainのDNS API](https://www.value-domain.com/api/doc/domain/#tag/DNS)をPerlから叩くためのユーティリティ関数群、ツールキット。
 
+DNSラウンドロビンのような同じドメインに複数のレコードがあるものは想定していない。
+
 ## モジュールについて
 
 基本的にPerlの組み込みモジュールの実を利用しているため、Perl 5.14以上なら動くと思われる。
@@ -212,6 +214,14 @@ if ($update_code != 200) {
 }
 ```
 
+## [`./test_vd-dns-util.pl`] テストコード
+
+**実行方法**
+
+```bash
+./test_vd-dns-util.pl
+```
+
 ## [`./vd-dcr.pl`] Value-DomainでCertbotのDNS認証を自動化するためのツール
 
 `./vd-dns-util.pl`を利用した実装サンプルでもある。
@@ -259,13 +269,31 @@ apt経由でインストールした場合、以降は勝手に自動更新が�
 
 1. ワイルドカードドメインに対応していない（それっぽいコードは書いているが、未検証）
 
-## [`./test_vd-dns-util.pl`] テストコード
+## [`./vd-ddns_v4.pl`] Value-Domainで特定のAレコードに対しDDNSするためのツール
 
-**実行方法**
+指定したルートドメインのDNSレコードから、指定したホスト名のAレコードを検索し、IPv4アドレスを一括更新する。
 
-```bash
-./test_vd-dns-util.pl
-```
+### 動作確認環境
+
+- Ubuntu 24.04.3 LTS, Perl 5.38.2
+
+### 使い方
+
+1. 本リポジトリの中身を任意の場所に展開し、適切な実行権限を付与する
+   ```bash
+   chmod +x /path/to/vd-ddns_v4.pl
+   ```
+2. 更新したいホスト名と新しいIPアドレスを指定して実行する
+   ```bash
+   /path/to/vd-ddns_v4.pl <value-domain-api-key> <root-domain> <new-ipv4> <hostname> [hostname...]
+   ```
+   **記述例**
+   ```bash
+   /path/to/vd-ddns_v4.pl x9FwKp3RmT7vLnYq2sUcBj6hXoDiA8gZeJrN4aMbQV5tWlCy0EdGuHfS1oIxP9wKmR7nTvLjYq3sUcBp6hXoZiD2gJeKr4aMbQkV example.com 22.33.44.55 hoge fuga piyo
+   ```
+   上記の例では `hoge.example.com`、`fuga.example.com`、`piyo.example.com` のAレコードを `22.33.44.55` に更新する。
+
+指定したホスト名が既存レコードに存在しない場合、そのホスト名はスキップされ標準エラーに警告を出力する（新規追加はしない）。
 
 ## ライセンス
 
