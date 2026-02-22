@@ -1,4 +1,4 @@
-# Value-Domain DNS API Utility for Perl
+# Value-Domain DNS API Utility
 
 [Value-DomainのDNS API](https://www.value-domain.com/api/doc/domain/#tag/DNS)をPerlから叩くためのユーティリティ関数群、ツールキット。
 
