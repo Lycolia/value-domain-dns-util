@@ -79,4 +79,26 @@ sudo certbot revoke --cert-name <target-domain>
 
 ## 既知の問題
 
-1. ワイルドカードドメインに対応していない
+## 1. ワイルドカードドメインに対応していない気がしている
+
+以下でValue-DomainのDNSレコードが更新されることは確認しているが、正しく機能する状態で動作しているかは確認できていない。
+
+```bash
+sudo certbot certonly --manual -n \
+  --preferred-challenges dns \
+  --agree-tos -m <your-email> \
+  --manual-auth-hook "/path/to/vd-dcr.pl 'XXXXXX' 'example.com' \
+  -d 'example.com' -d '*.example.com'
+```
+
+## 2. 複数ドメインを一括指定した場合に正しく動くかどうかが不明
+
+以下でValue-DomainのDNSレコードが更新されることは確認しているが、正しく機能する状態で動作しているかは確認できていない。
+
+```bash
+sudo certbot certonly --manual -n \
+  --preferred-challenges dns \
+  --agree-tos -m <your-email> \
+  --manual-auth-hook "/path/to/vd-dcr.pl 'XXXXXX' 'example.com' \
+  -d 'hoge.example.com' -d 'fuga.example.com'
+```
