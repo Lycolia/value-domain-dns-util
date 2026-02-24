@@ -1,5 +1,9 @@
 # [`./vd-dns-util.pl`] ツールキット本体
 
+[Value-DomainのDNS API](https://www.value-domain.com/api/doc/domain/#tag/DNS)をPerlから叩くためのツールキット、すなわちユーティリティ関数群。
+
+DNSラウンドロビンのような同じドメインに複数のレコードがあるものは想定していない。
+
 ## 動作確認環境
 
 ### Ubuntu
