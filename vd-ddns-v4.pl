@@ -26,6 +26,9 @@ if ($get_code != 200) {
     exit 10;
 }
 
+print "=== SOURCE DATA ===\n";
+print "$get_body\n";
+
 my $get_json       = decode_json($get_body);
 my $source_records = $get_json->{results}{records};
 my $source_ttl     = $get_json->{results}{ttl};
@@ -61,4 +64,5 @@ if ($update_code != 200) {
     exit 11;
 }
 
+print "=== UPDATED DATA ===\n";
 print "$update_body\n";
