@@ -68,7 +68,7 @@ if ($exists_record eq '') {
 }
 
 # ValueDomainAPIにあるTTLのバグ対応
-my $adjusted_ttl = adjust_ttl($source_ttl + 0);
+my $adjusted_ttl = defined $ttl ? adjust_ttl($ttl + 0) : adjust_ttl($source_ttl + 0);
 
 my $json = encode_json({
     ns_type => $source_ns_type,
