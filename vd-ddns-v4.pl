@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# vd-ddns_v4.pl <apikey> <root-domain> <new-ipv4> [hostname...]
+# vd-ddns-v4.pl <apikey> <root-domain> <new-ipv4> [hostname...]
 #
 # 指定したホスト名のAレコードのIPv4アドレスを<new-ipv4>に一括更新する
 # [hostname...] は $get_json->{results}{records} 内の "a <hostname> <ip>" の

@@ -1,4 +1,4 @@
-# [`vd-ddns_v4.pl`] Value-Domainで特定のAレコードに対しDDNSするためのツール
+# [`vd-ddns-v4.pl`] Value-Domainで特定のAレコードに対しDDNSするためのツール
 
 指定したルートドメインのDNSレコードから、指定したホスト名のAレコードを検索し、IPv4アドレスを一括更新する。
 
@@ -57,15 +57,15 @@
 
 1. 本リポジトリの中身を任意の場所に展開し、適切な実行権限を付与する
    ```bash
-   chmod +x /path/to/vd-ddns_v4.pl
+   chmod +x /path/to/vd-ddns-v4.pl
    ```
 2. 更新したいホスト名と新しいIPアドレスを指定して実行する
    ```bash
-   /path/to/vd-ddns_v4.pl <value-domain-api-key> <root-domain> <new-ipv4> <hostname> [hostname...]
+   /path/to/vd-ddns-v4.pl <value-domain-api-key> <root-domain> <new-ipv4> <hostname> [hostname...]
    ```
    **記述例**
    ```bash
-   /path/to/vd-ddns_v4.pl x9FwKp3RmT7vLnYq2sUcBj6hXoDiA8gZeJrN4aMbQV5tWlCy0EdGuHfS1oIxP9wKmR7nTvLjYq3sUcBp6hXoZiD2gJeKr4aMbQkV example.com 22.33.44.55 hoge fuga piyo
+   /path/to/vd-ddns-v4.pl x9FwKp3RmT7vLnYq2sUcBj6hXoDiA8gZeJrN4aMbQV5tWlCy0EdGuHfS1oIxP9wKmR7nTvLjYq3sUcBp6hXoZiD2gJeKr4aMbQkV example.com 22.33.44.55 hoge fuga piyo
    ```
    上記の例では `hoge.example.com`、`fuga.example.com`、`piyo.example.com` のAレコードを `22.33.44.55` に更新する。
 
