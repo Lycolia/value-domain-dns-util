@@ -12,7 +12,7 @@ use strict;
 use warnings;
 use JSON::PP;
 use FindBin qw($Bin);
-require "$Bin/vd-dns-util.pl";
+require "$Bin/lib/vd-dns-util.pl";
 
 my ($apikey, $root_domain, $ttl) = @ARGV;
 

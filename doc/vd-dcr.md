@@ -1,6 +1,6 @@
-# [`./vd-dcr.pl`] Value-DomainでCertbotのDNS-01 challengeを自動化するためのツール
+# [`vd-dcr.pl`] Value-DomainでCertbotのDNS-01 challengeを自動化するためのツール
 
-`./vd-dns-util.pl`を利用した実装サンプルでもある。
+`lib/vd-dns-util.pl`を利用した実装サンプルでもある。
 
 ## 動作確認環境
 
