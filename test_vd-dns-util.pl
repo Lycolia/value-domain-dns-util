@@ -48,7 +48,16 @@ is(adjust_ttl(121), 121, 'adjust_ttl: TTLが121ならそのまま121を返す');
     is(
         find_first_record($records, 'a www2'),
         'a www2 192.168.1.3',
-        'find_first_record: 先頭一致で検索する',
+        'find_first_record: レコード名が完全一致するものを返す',
+    );
+}
+{
+    my $records = "txt _acme-challenge.hoge \"existing\"\na www 192.168.1.1";
+    is(
+        # txt _acme-challengeの先頭一致でtxt _acme-challenge.hogeが取得されないことの確認用
+        find_first_record($records, 'txt _acme-challenge'),
+        '',
+        'find_first_record: サブドメイン付きレコードが存在する場合に、サブドメインが取得されない',
     );
 }
 {
@@ -137,6 +146,15 @@ is(adjust_ttl(121), 121, 'adjust_ttl: TTLが121ならそのまま121を返す');
         replace_record($records, 'txt _acme-challenge', 'txt _acme-challenge newvalue'),
         "a www 192.168.1.1\ntxt _acme-challenge newvalue",
         'replace_record: txtレコードの値を更新できる',
+    );
+}
+{
+    my $records = "txt _acme-challenge.hoge \"existing\"\ntxt _acme-challenge oldvalue";
+    is(
+        # txt _acme-challengeの先頭一致でtxt _acme-challenge.hogeが更新されないことの確認用
+        replace_record($records, 'txt _acme-challenge', 'txt _acme-challenge newvalue'),
+        "txt _acme-challenge.hoge \"existing\"\ntxt _acme-challenge newvalue",
+        'replace_record: サブドメイン付きレコードが存在する場合に、ルートドメインのみ更新される',
     );
 }
 

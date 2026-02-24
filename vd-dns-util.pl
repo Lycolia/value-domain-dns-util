@@ -27,13 +27,14 @@ sub request_get_records {
 # 一致した先頭一件を取得する
 # 引数:
 #   $records : DNSレコード本文（複数行文字列）
-#   $subject : 検索文字列（先頭一致）
+#   $subject : 検索文字列（レコード名の完全一致）
+#      レコード名とは"txt hoge"のようにレコードタイプとサブドメインの組み合わせのこと
 # 戻り値:
 #   一致したレコード行。なければ空文字
 sub find_first_record {
     my ($records, $subject) = @_;
     for my $line (split /\n/, $records) {
-        return $line if $line =~ /^\Q$subject\E/;
+        return $line if $line =~ /^\Q$subject\E\s/;
     }
     return '';
 }
@@ -52,7 +53,8 @@ sub append_record {
 # Value-DomainのDNSレコードデータ（records）にあるレコードを置換する
 # 引数:
 #   $records     : DNSレコード本文（複数行文字列）
-#   $subject     : 検索文字列（先頭一致）
+#   $subject     : 検索文字列（レコード名の完全一致）
+#      レコード名とは"txt hoge"のようにレコードタイプとサブドメインの組み合わせのこと
 #   $replacement : 置換するレコード行
 # 戻り値:
 #   $subjectにマッチした行を$replacementで置換したレコード
@@ -60,7 +62,7 @@ sub replace_record {
     my ($records, $subject, $replacement) = @_;
     my @lines = split /\n/, $records;
     for my $line (@lines) {
-        $line = $replacement if $line =~ /^\Q$subject\E/;
+        $line = $replacement if $line =~ /^\Q$subject\E\s/;
     }
     return join "\n", @lines;
 }
