@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# value-domain-dns-cert-register
+# Value-DomainでCertbotのDNS-01 challengeを自動化するためのツール
 # vd-dcr.pl <value-domain-api-key> <root-domain> [ttl]
 #
 # [ttl]はオプションなので省いてもよい

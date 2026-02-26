@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# Value-DomainでIPv4向けのバルクDDNSを自動化するためのツール
 # vd-ddns-v4.pl <apikey> <root-domain> <new-ipv4> [hostname...]
 #
 # 指定したホスト名のAレコードのIPv4アドレスを<new-ipv4>に一括更新する
