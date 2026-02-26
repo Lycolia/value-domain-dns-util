@@ -87,3 +87,6 @@ if ($update_code != 200) {
 
 print "=== UPDATED DATA ===\n";
 print "$update_body\n";
+
+# TXTレコードを確実に検証できるように3秒ほど止める。API連打防止も兼ねている
+sleep(3);
