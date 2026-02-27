@@ -1,6 +1,6 @@
 # Value-Domain DNS API Utility
 
-[Value-DomainのDNS API](https://www.value-domain.com/api/doc/domain/#tag/DNS)をPerlから叩くためのツールキットと、すぐに使えるツール群。
+[Value-DomainのDNS API](https://www.value-domain.com/api/doc/domain/#tag/DNS)をValue-DomainのDNS APIをPerlから叩くためのスクリプトと、そのユーティリティ関数群（ツールキット）。
 
 DNSラウンドロビンのような同じドメインに複数のレコードがあるものは想定していない。
 
