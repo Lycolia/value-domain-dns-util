@@ -49,7 +49,7 @@
 
 apt経由でインストールした場合、以降は勝手に自動更新が走るはず。
 
-何故なら、`/etc/cron.d/certbot`や`cat /usr/lib/systemd/system/certbot.service`には定期的な更新処理が記述されており、これらは恐らく`/etc/letsencrypt/renewal/*.conf`を参照して更新しているからだ。
+何故なら、`/etc/cron.d/certbot`や`/usr/lib/systemd/system/certbot.service`には定期的な更新処理が記述されており、これらは恐らく`/etc/letsencrypt/renewal/*.conf`を参照して更新しているからだ。
 
 `/etc/letsencrypt/renewal/*.conf`には、過去に実行した証明書更新用の設定が書き込まれており、態々毎回フルパラメーターを指定せずとも動くようになっているものと思われる。
 
