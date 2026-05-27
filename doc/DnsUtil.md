@@ -17,7 +17,7 @@
 
 ## 使い方
 
-`./vd-dcr.pl`にあるように`use`して利用する想定。
+`./vd-dcr-auth.pl`にあるように`use`して利用する想定。
 
 ```perl
 use FindBin qw($Bin);

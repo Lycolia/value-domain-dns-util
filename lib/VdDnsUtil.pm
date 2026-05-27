@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use HTTP::Tiny;
 
+our $VERSION = '0.2.0';
+
 my $API_BASE_URL = 'https://api.value-domain.com/v1/domains';
 
 # Value-DomainのDNS APIに指定ドメインのDNSレコード設定の問い合わせを行い
@@ -17,7 +19,7 @@ my $API_BASE_URL = 'https://api.value-domain.com/v1/domains';
 sub request_get_records {
     my ($apikey, $root_domain) = @_;
     my $http = HTTP::Tiny->new;
-    my $url  = "$API_BASE_URL/$root_domain/dns";
+    my $url = "$API_BASE_URL/$root_domain/dns";
     my $resp = $http->request('GET', $url, {
         headers => { 'Authorization' => "Bearer $apikey" },
     });
@@ -68,6 +70,20 @@ sub replace_record {
     return join "\n", @lines;
 }
 
+# Value-DomainのDNSレコードデータ（records）にあるレコードのうち、検索条件に一致するものを全行削除する
+# 引数:
+#   $records     : DNSレコード本文（複数行文字列）
+#   $subject     : 検索文字列（レコード行の完全一致）
+#      レコード行とは"txt _acme-challenge.hogeff \"3nA1xm1V3oCb2a95CLs0hfEwoAwX3BXvCA8PssgmiqE\"のようなもの
+# 戻り値:
+#   $subjectにマッチした行を削除したレコード
+sub delete_records {
+    my ($records, $subject) = @_;
+    my @lines = split /\n/, $records;
+    my @filtered = grep { $_ ne $subject } @lines;
+    return join "\n", @filtered;
+}
+
 # ttlが120未満であれば120に補正し、そうでなければそのままを返す
 # これはValue-Domain APIの仕様上、120未満を指定すると、3600が割り当てられるため
 # 最短の120を割り当てるようにするための補助関数である
@@ -92,7 +108,7 @@ sub adjust_ttl {
 sub request_update_records {
     my ($apikey, $root_domain, $json) = @_;
     my $http = HTTP::Tiny->new;
-    my $url  = "$API_BASE_URL/$root_domain/dns";
+    my $url = "$API_BASE_URL/$root_domain/dns";
     my $resp = $http->request('PUT', $url, {
         headers => {
             'Authorization' => "Bearer $apikey",

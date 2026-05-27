@@ -13,6 +13,13 @@ use FindBin qw($Bin);
 use lib "$Bin/lib";
 use VdDnsUtil;
 
+my $VERSION = '0.2.0';
+
+# vd-dcrのように共通化すると不要な依存関係を引っ張ってきてしまうため、ベタで実装している
+print "=== Value-Domain DDNS tool ===\n";
+print "VERSION: $VERSION\n";
+print "VdDnsUtil: ${VdDnsUtil::VERSION}\n";
+
 my ($apikey, $root_domain, $new_ip, @hostnames) = @ARGV;
 
 unless ($apikey && $root_domain && $new_ip && @hostnames) {
@@ -31,17 +38,17 @@ if ($get_code != 200) {
 print "=== SOURCE DATA ===\n";
 print "$get_body\n";
 
-my $get_json       = decode_json($get_body);
+my $get_json = decode_json($get_body);
 my $source_records = $get_json->{results}{records};
-my $source_ttl     = $get_json->{results}{ttl};
+my $source_ttl = $get_json->{results}{ttl};
 my $source_ns_type = $get_json->{results}{ns_type};
 
 # 指定ホスト名ごとにAレコードを新しいIPに置換
 my $new_records = $source_records;
 for my $hostname (@hostnames) {
-    my $subject     = "a $hostname";
-    my $exists      = VdDnsUtil::find_first_record($new_records, $subject);
-    my $new_record  = "a $hostname $new_ip";
+    my $subject = "a $hostname";
+    my $exists = VdDnsUtil::find_first_record($new_records, $subject);
+    my $new_record = "a $hostname $new_ip";
     if ($exists ne '') {
         $new_records = VdDnsUtil::replace_record($new_records, $subject, $new_record);
     } else {
@@ -54,7 +61,7 @@ my $adjusted_ttl = VdDnsUtil::adjust_ttl($source_ttl + 0);
 my $json = encode_json({
     ns_type => $source_ns_type,
     records => $new_records,
-    ttl     => $adjusted_ttl,
+    ttl => $adjusted_ttl,
 });
 
 # ValueDomainAPIにレコードの更新要求を出す

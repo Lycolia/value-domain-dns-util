@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use Net::DNS::Dig;
 
+our $VERSION = '0.1.0';
+
 # DNSレコードからレコードタイプに紐づく値を取得するユーティリティ関数
 # 引数:
 #   $fqdn        : レコードを確認するFQDN
