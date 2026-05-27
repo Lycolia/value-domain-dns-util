@@ -1,4 +1,4 @@
-# [`VdDnsUtil.pm`] ツールキット本体
+# [`VdDnsUtil.pm`] ValueDomain DNS APIのツールキット本体
 
 [Value-DomainのDNS API](https://www.value-domain.com/api/doc/domain/#tag/DNS)をPerlから叩くためのツールキット、すなわちユーティリティ関数群。
 

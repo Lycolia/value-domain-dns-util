@@ -1,10 +1,8 @@
 #
 # 実行方法:
 #   prove t/VdDnsUtil.t
-#   或いは
-#   perl t/VdDnsUtil.t
 #
-# Test::More はPerlコアモジュールのため追加インストール不要
+# Test::MoreはPerlコアモジュールのため追加インストール不要
 #
 
 use strict;
@@ -14,7 +12,7 @@ use FindBin qw($Bin);
 use lib "$Bin/../lib";
 use VdDnsUtil;
 
-# HTTP::Tiny::request をモックするヘルパー
+# HTTP::Tiny::requestをモックするヘルパー
 # 引数: $body=レスポンスボディ, $code=HTTPステータスコード
 # 戻り値: コードブロック内でモックを有効にするための無名subを返す
 sub make_mock_response {

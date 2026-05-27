@@ -10,10 +10,12 @@
 
 use strict;
 use warnings;
+use POSIX;
 use JSON::PP;
 use FindBin qw($Bin);
 use lib "$Bin/lib";
 use VdDnsUtil;
+use DnsUtil;
 
 my ($apikey, $root_domain, $ttl) = @ARGV;
 
@@ -89,5 +91,28 @@ if ($update_code != 200) {
 print "=== UPDATED DATA ===\n";
 print "$update_body\n";
 
-# TXTレコードを確実に検証できるように3秒ほど止める。API連打防止も兼ねている
-sleep(3);
+# 全権威DNSにTXTレコードが反映されたかをポーリングで確認する
+# Let's Encryptの検証より前に確実に反映を見届けるため、ローカルリゾルバではなく
+# ルートドメインの権威DNSへ直接問い合わせる
+my @auth_ns     = DnsUtil::dig_value($root_domain, 'NS');
+
+unless (@auth_ns) {
+    print STDERR "$root_domain の権威DNSサーバの取得に失敗しました。\n";
+    exit 12;
+}
+
+my $fqdn        = "$acme_domain.$root_domain";
+print "=== DNS PROPAGATION CHECK ===\n";
+print "FQDN: $fqdn\n";
+print "Authoritative NS:\n";
+print "  $_\n" for @auth_ns;
+
+my $poll_wait   = 3;
+my $poll_max    = POSIX::ceil($adjusted_ttl / $poll_wait);
+my $finded      = DnsUtil::find_record($fqdn, 'TXT', $certbot_validation, $poll_max, $poll_wait, @auth_ns);
+
+if ($finded) {
+    exit 0;
+} else {
+    exit 13;
+}
