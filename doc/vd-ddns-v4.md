@@ -1,4 +1,4 @@
-# [`vd-ddns-v4.pl`] Value-Domainで特定のAレコードに対しDDNSするためのツール
+# [`vd-ddns-v4.pl`] Value-Domainで複数のAレコードに対しDDNSするためのツール
 
 指定したルートドメインのDNSレコードから、指定したホスト名のAレコードを検索し、IPv4アドレスを一括更新する。
 
