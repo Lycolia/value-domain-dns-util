@@ -95,6 +95,8 @@ sudo certbot certonly --manual -n \
 
 **※このパターンは動作確認してません。**
 
+複数ドメインに対して行う場合は、一つのドメインに対し証明書を作る場合のコマンドを複数回流す方が確実だと思います。
+
 ```bash
 sudo certbot certonly --manual -n \
   --preferred-challenges dns \
