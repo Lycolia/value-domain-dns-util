@@ -1,6 +1,6 @@
 # [`vd-dcr.pl`] Value-DomainでCertbotのDNS-01 challengeを自動化するためのツール
 
-`lib/vd-dns-util.pl`を利用した実装サンプルでもある。
+`lib/VdDnsUtil.pm`を利用した実装サンプルでもある。
 
 複数ドメイン指定や、ワイルドカードドメインにも対応しているはず。
 
@@ -13,7 +13,7 @@
 
 ## 必須モジュール
 
-[vd-dns-util.pl](vd-dns-util.md)の必須モジュール及び、下記モジュール。
+[VdDnsUtil.pm](VdDnsUtil.md)の必須モジュール及び、下記モジュール。
 
 | モジュール | 用途                      |
 | ---------- | ------------------------- |

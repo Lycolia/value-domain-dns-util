@@ -1,4 +1,5 @@
-#!/usr/bin/perl
+package VdDnsUtil;
+
 use strict;
 use warnings;
 use HTTP::Tiny;

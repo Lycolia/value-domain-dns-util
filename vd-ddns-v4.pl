@@ -10,7 +10,8 @@ use strict;
 use warnings;
 use JSON::PP;
 use FindBin qw($Bin);
-require "$Bin/lib/vd-dns-util.pl";
+use lib "$Bin/lib";
+use VdDnsUtil;
 
 my ($apikey, $root_domain, $new_ip, @hostnames) = @ARGV;
 
@@ -19,7 +20,7 @@ unless ($apikey && $root_domain && $new_ip && @hostnames) {
 }
 
 # ValueDomainAPIからレコードを取得
-my ($get_body, $get_code) = request_get_records($apikey, $root_domain);
+my ($get_body, $get_code) = VdDnsUtil::request_get_records($apikey, $root_domain);
 
 if ($get_code != 200) {
     print STDERR "CODE:$get_code\tDNSレコードの取得に失敗しました。\n";
@@ -39,16 +40,16 @@ my $source_ns_type = $get_json->{results}{ns_type};
 my $new_records = $source_records;
 for my $hostname (@hostnames) {
     my $subject     = "a $hostname";
-    my $exists      = find_first_record($new_records, $subject);
+    my $exists      = VdDnsUtil::find_first_record($new_records, $subject);
     my $new_record  = "a $hostname $new_ip";
     if ($exists ne '') {
-        $new_records = replace_record($new_records, $subject, $new_record);
+        $new_records = VdDnsUtil::replace_record($new_records, $subject, $new_record);
     } else {
         print STDERR "$subject は既存レコードに見つかりませんでした。\n";
     }
 }
 
-my $adjusted_ttl = adjust_ttl($source_ttl + 0);
+my $adjusted_ttl = VdDnsUtil::adjust_ttl($source_ttl + 0);
 
 my $json = encode_json({
     ns_type => $source_ns_type,
@@ -57,7 +58,7 @@ my $json = encode_json({
 });
 
 # ValueDomainAPIにレコードの更新要求を出す
-my ($update_body, $update_code) = request_update_records($apikey, $root_domain, $json);
+my ($update_body, $update_code) = VdDnsUtil::request_update_records($apikey, $root_domain, $json);
 
 if ($update_code != 200) {
     print STDERR "CODE:$update_code\tDNSレコードの更新に失敗しました。\n";

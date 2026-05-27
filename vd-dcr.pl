@@ -12,7 +12,8 @@ use strict;
 use warnings;
 use JSON::PP;
 use FindBin qw($Bin);
-require "$Bin/lib/vd-dns-util.pl";
+use lib "$Bin/lib";
+use VdDnsUtil;
 
 my ($apikey, $root_domain, $ttl) = @ARGV;
 
@@ -35,7 +36,7 @@ sub create_acme_domain {
 }
 
 # ValueDomainAPIからレコードを取得
-my ($get_body, $get_code) = request_get_records($apikey, $root_domain);
+my ($get_body, $get_code) = VdDnsUtil::request_get_records($apikey, $root_domain);
 
 print "=== SOURCE DATA ===\n";
 print "$get_body\n";
@@ -57,18 +58,18 @@ my $certbot_validation = $ENV{CERTBOT_VALIDATION} or die "CERTBOT_VALIDATION is 
 my $acme_domain = create_acme_domain($root_domain, $certbot_domain);
 
 # Certbotの情報でレコードを追加または置換
-my $exists_record = find_first_record($source_records, "txt $acme_domain");
+my $exists_record = VdDnsUtil::find_first_record($source_records, "txt $acme_domain");
 my $new_record    = qq(txt $acme_domain "$certbot_validation");
 my $new_records;
 
 if ($exists_record eq '') {
-    $new_records = append_record($source_records, $new_record);
+    $new_records = VdDnsUtil::append_record($source_records, $new_record);
 } else {
-    $new_records = replace_record($source_records, "txt $acme_domain", $new_record);
+    $new_records = VdDnsUtil::replace_record($source_records, "txt $acme_domain", $new_record);
 }
 
 # ValueDomainAPIにあるTTLのバグ対応
-my $adjusted_ttl = defined $ttl ? adjust_ttl($ttl + 0) : adjust_ttl($source_ttl + 0);
+my $adjusted_ttl = defined $ttl ? VdDnsUtil::adjust_ttl($ttl + 0) : VdDnsUtil::adjust_ttl($source_ttl + 0);
 
 my $json = encode_json({
     ns_type => $source_ns_type,
@@ -77,7 +78,7 @@ my $json = encode_json({
 });
 
 # ValueDomainAPIにレコードの更新要求を出す
-my ($update_body, $update_code) = request_update_records($apikey, $root_domain, $json);
+my ($update_body, $update_code) = VdDnsUtil::request_update_records($apikey, $root_domain, $json);
 
 if ($update_code != 200) {
     print STDERR "CODE:$update_code\tDNSレコードの更新に失敗しました。\n";
