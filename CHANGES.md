@@ -7,6 +7,7 @@
   - 起動時に出ます。`--version`的なオプションをつけての表示には対応してません
 - ワイルドカードドメインなど、複数ドメインを指定した時に`--manual-cleanup-hook`がないと失敗する問題に対応
   - `--manual-cleanup-hook`用のスクリプトを追加し、従来のスクリプトに持たせていたクリーンアップ処理を削除
+- `lib/VdDnsUtil.pm`に`delete_records($records, $subject)`を追加し、Value-Domain DNS APIのレコード情報から指定した行を削除できるようにした
 - `vd-dcr-*.pl`系の共通処理置き場として`lib/DcrUtil.pm`を作成
   - 起動時表示、レスポンスのパース、Certbot環境変数の読み取り、TTL補正をユーティリティ関数化
 - その他、`vd-dcr-*.pl`系の使い方の例にワイルドカードドメインや、複数ドメインの一括指定方法を追加
