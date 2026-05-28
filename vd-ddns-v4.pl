@@ -33,10 +33,6 @@ my ($get_body, $get_code) = VdDnsUtil::request_get_records($apikey, $root_domain
 VdUtil::print_source_data($get_body);
 my ($source_records, $source_ttl, $source_ns_type) = VdUtil::parse_dns_response($get_body, $get_code);
 
-if ($source_records == 0) {
-    exit 10;
-}
-
 # 指定ホスト名ごとにAレコードを新しいIPに置換
 my $new_records = $source_records;
 for my $hostname (@hostnames) {
