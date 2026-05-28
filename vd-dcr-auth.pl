@@ -18,7 +18,7 @@ use VdDnsUtil;
 use DnsUtil;
 use DcrUtil;
 
-my $VERSION = '0.2.0';
+my $VERSION = '0.2.1';
 
 DcrUtil::print_program_title("Value-Domain DNS-01 challenge Authenticator", $VERSION);
 
@@ -56,7 +56,6 @@ my ($update_body, $update_code) = VdDnsUtil::request_update_records($apikey, $ro
 
 if ($update_code != 200) {
     print STDERR "CODE:$update_code\tDNSレコードの更新に失敗しました。\n";
-    print STDERR "$update_body\n";
     print STDERR "=== RESPONSE DATA ===\n";
     print STDERR "$update_body\n";
     print STDERR "=== REQUEST DATA ===\n";
