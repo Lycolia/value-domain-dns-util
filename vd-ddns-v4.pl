@@ -16,14 +16,16 @@ use VdUtil;
 
 my $VERSION = '2026-05-28';
 
-print "=== Value-Domain DDNS tool ===\n";
-print "VERSION: $VERSION\n";
-print "VdDnsUtil: ${VdDnsUtil::VERSION}\n";
+VdUtil::print_program_title(
+    "Value-Domain DDNS tool", $VERSION,
+    'VdDnsUtil', $VdDnsUtil::VERSION
+);
 
 my ($apikey, $root_domain, $new_ip, @hostnames) = @ARGV;
 
 unless ($apikey && $root_domain && $new_ip && @hostnames) {
-    die "Usage: $0 <apikey> <root-domain> <new-ipv4> <hostname> [hostname...]\n";
+    print STDERR "Usage: $0 <apikey> <root-domain> <new-ipv4> <hostname> [hostname...]\n";
+    exit 1;
 }
 
 # ValueDomainAPIからレコードを取得

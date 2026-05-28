@@ -20,12 +20,17 @@ use VdUtil;
 
 my $VERSION = '2026-05-28';
 
-VdUtil::print_program_title("Value-Domain DNS-01 challenge Authenticator", $VERSION, $VdDnsUtil::VERSION, $DnsUtil::VERSION);
+VdUtil::print_program_title(
+    "Value-Domain DNS-01 challenge Authenticator",  $VERSION,
+    'VdDnsUtil', $VdDnsUtil::VERSION,
+    'DnsUtil', $DnsUtil::VERSION
+);
 
 my ($apikey, $root_domain, $argv_ttl) = @ARGV;
 
 unless ($apikey && $root_domain) {
-    die "Usage: $0 <apikey> <root-domain> [ttl]\n";
+    print STDERR "Usage: $0 <apikey> <root-domain> [ttl]\n";
+    exit 1;
 }
 
 # ValueDomainAPIからレコードを取得
@@ -74,9 +79,9 @@ print "  $_\n" for @auth_ns;
 
 my $poll_wait = 3;
 my $poll_max = POSIX::ceil($adjusted_ttl / $poll_wait);
-my $finded = DnsUtil::find_record($fqdn, 'TXT', $certbot_validation, $poll_max, $poll_wait, @auth_ns);
+my $found = DnsUtil::find_record($fqdn, 'TXT', $certbot_validation, $poll_max, $poll_wait, @auth_ns);
 
-if ($finded) {
+if ($found) {
     # Let's Encryptの検証が早すぎる場合があるため、バッファで少し待つ
     sleep(5);
     exit 0;

@@ -85,8 +85,8 @@ VDAPIKEY=x9FwKp3RmT7vLnYq2sUcBj6hXoDiA8gZeJrN4aMbQV5tWlCy0EdGuHfS1oIxP9wKmR7nTvL
 sudo certbot certonly --manual -n \
   --preferred-challenges dns \
   --agree-tos -m postmaster@example.com \
-  --manual-auth-hook "path/to/vd-dcr-auth.pl $VDAPIKEY $TARGET" \
-  --manual-cleanup-hook "path/to/vd-dcr-cleanup.pl $VDAPIKEY $TARGET" \
+  --manual-auth-hook "/path/to/vd-dcr-auth.pl $VDAPIKEY $TARGET" \
+  --manual-cleanup-hook "/path/to/vd-dcr-cleanup.pl $VDAPIKEY $TARGET" \
   -d "$TARGET" \
   -d "*.$TARGET"
 ```
@@ -117,8 +117,8 @@ VDAPIKEY=x9FwKp3RmT7vLnYq2sUcBj6hXoDiA8gZeJrN4aMbQV5tWlCy0EdGuHfS1oIxP9wKmR7nTvL
 sudo certbot certonly --manual -n \
   --preferred-challenges dns \
   --agree-tos -m postmaster@example.com \
-  --manual-auth-hook "path/to/vd-dcr-auth.pl $VDAPIKEY $TARGET" \
-  --manual-cleanup-hook "path/to/vd-dcr-cleanup.pl $VDAPIKEY $TARGET" \
+  --manual-auth-hook "/path/to/vd-dcr-auth.pl $VDAPIKEY $TARGET" \
+  --manual-cleanup-hook "/path/to/vd-dcr-cleanup.pl $VDAPIKEY $TARGET" \
   -d "hoge.$TARGET" \
   -d "fuga.$TARGET" \
   -d "piyo.$TARGET"

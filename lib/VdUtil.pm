@@ -10,12 +10,14 @@ our $VERSION = '2026-05-28';
 # 引数:
 #   $title   : プログラムタイトル
 #   $prg_ver : プログラムバージョン
+#   @libs    : (ライブラリ名, バージョン) のペアの並び（可変長）
 sub print_program_title {
-    my ($title, $prg_ver, $vd_dns_util_ver, $dns_util_ver) = @_;
+    my ($title, $prg_ver, @libs) = @_;
     print "=== $title ===\n";
     print "VERSION: $prg_ver\n";
-    print "VdDnsUtil: $vd_dns_util_ver\n";
-    print "DnsUtil: $dns_util_ver\n";
+    while (my ($name, $ver) = splice(@libs, 0, 2)) {
+        print "$name: $ver\n";
+    }
     print "VdUtil: $VERSION\n";
 }
 
@@ -44,7 +46,7 @@ sub print_source_data {
 }
 
 # Value-Domain DNS APIのGETレスポンスを検証してパースする
-# HTTPステータスが200以外ならSTDERRにエラーを出力してdieする
+# HTTPステータスが200以外ならSTDERRにエラーを出力して exit 10 する
 # 引数:
 #   $body : APIのレスポンスボディ（JSON文字列）
 #   $code : HTTPステータスコード
@@ -66,26 +68,35 @@ sub parse_dns_response {
     } else {
         print STDERR "CODE:$code\tDNSレコードの取得に失敗しました。\n";
         print STDERR "$body\n";
-        die "request_get_records failed\n";
+        exit 10;
     }
 }
 
 # Certbotから渡される環境変数を取得する
-# CERTBOT_DOMAIN または CERTBOT_VALIDATION が未設定ならdieする
+# CERTBOT_DOMAIN または CERTBOT_VALIDATION が未設定なら exit 20 する
 # 戻り値: ($certbot_domain, $certbot_validation) のリスト
 sub read_certbot_env {
-    my $certbot_domain     = $ENV{CERTBOT_DOMAIN}     or die "CERTBOT_DOMAIN is not set\n";
-    my $certbot_validation = $ENV{CERTBOT_VALIDATION} or die "CERTBOT_VALIDATION is not set\n";
+    my $certbot_domain     = $ENV{CERTBOT_DOMAIN};
+    unless ($certbot_domain) {
+        print STDERR "CERTBOT_DOMAIN is not set\n";
+        exit 20;
+    }
+    my $certbot_validation = $ENV{CERTBOT_VALIDATION};
+    unless ($certbot_validation) {
+        print STDERR "CERTBOT_VALIDATION is not set\n";
+        exit 21;
+    }
     return ($certbot_domain, $certbot_validation);
 }
 
 # Value-Domain DNS APIの更新レスポンスを処理する
-# HTTPステータスが200以外なら標準エラーにリクエスト/レスポンスを出力して exit 11 する
-# 200なら標準出力にレスポンスボディを表示する
+# HTTPステータスが200以外なら標準エラーにリクエスト/レスポンスを出力して0を返す
+# 200なら標準出力にレスポンスボディを表示して1を返す
 # 引数:
 #   $code : HTTPステータスコード
 #   $body : APIのレスポンスボディ
 #   $req  : 送信したリクエストボディ（JSON文字列）
+# 戻り値: 成功なら1、失敗なら0
 sub handle_update_response {
     my ($code, $body, $req) = @_;
 
@@ -95,11 +106,13 @@ sub handle_update_response {
         print STDERR "$body\n";
         print STDERR "=== REQUEST DATA ===\n";
         print STDERR "$req\n";
+
         return 0;
     } else {
         print "CODE:$code\tDNSレコードの更新に成功しました。\n";
         print "=== UPDATED DATA ===\n";
         print "$body\n";
+
         return 1;
     }
 }

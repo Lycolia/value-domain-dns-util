@@ -20,12 +20,17 @@ use VdUtil;
 
 my $VERSION = '2026-05-28';
 
-VdUtil::print_program_title("Value-Domain DNS-01 challenge Cleaner", $VERSION, $VdDnsUtil::VERSION, $DnsUtil::VERSION);
+VdUtil::print_program_title(
+    "Value-Domain DNS-01 challenge Cleaner", $VERSION,
+    'VdDnsUtil', $VdDnsUtil::VERSION,
+    'DnsUtil', $DnsUtil::VERSION,
+);
 
 my ($apikey, $root_domain, $argv_ttl) = @ARGV;
 
 unless ($apikey && $root_domain) {
-    die "Usage: $0 <apikey> <root-domain> [ttl]\n";
+    print STDERR "Usage: $0 <apikey> <root-domain> [ttl]\n";
+    exit 1;
 }
 
 # ValueDomainAPIからレコードを取得
