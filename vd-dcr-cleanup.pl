@@ -59,4 +59,7 @@ my $json = encode_json({
 
 # ValueDomainAPIにレコードの更新要求を出す
 my ($update_body, $update_code) = VdDnsUtil::request_update_records($apikey, $root_domain, $json);
-VdUtil::handle_update_response($update_code, $update_body, $json);
+my $update_result = VdUtil::handle_update_response($update_code, $update_body, $json);
+if ($update_result == 0) {
+    exit 11;
+}
