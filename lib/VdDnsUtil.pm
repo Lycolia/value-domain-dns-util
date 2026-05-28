@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use HTTP::Tiny;
 
-our $VERSION = '2025-05-28';
+our $VERSION = '2026-05-28';
 
 my $API_BASE_URL = 'https://api.value-domain.com/v1/domains';
 

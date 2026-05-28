@@ -14,7 +14,7 @@ use lib "$Bin/lib";
 use VdDnsUtil;
 use VdUtil;
 
-my $VERSION = '2025-05-28';
+my $VERSION = '2026-05-28';
 
 print "=== Value-Domain DDNS tool ===\n";
 print "VERSION: $VERSION\n";
@@ -30,6 +30,10 @@ unless ($apikey && $root_domain && $new_ip && @hostnames) {
 my ($get_body, $get_code) = VdDnsUtil::request_get_records($apikey, $root_domain);
 VdUtil::print_source_data($get_body);
 my ($source_records, $source_ttl, $source_ns_type) = VdUtil::parse_dns_response($get_body, $get_code);
+
+if ($source_records == 0) {
+    exit 10;
+}
 
 # 指定ホスト名ごとにAレコードを新しいIPに置換
 my $new_records = $source_records;
@@ -54,15 +58,10 @@ my $json = encode_json({
 
 # ValueDomainAPIにレコードの更新要求を出す
 my ($update_body, $update_code) = VdDnsUtil::request_update_records($apikey, $root_domain, $json);
+my $succeed = VdUtil::handle_update_response($update_code, $update_body, $json);
 
-if ($update_code != 200) {
-    print STDERR "CODE:$update_code\tDNSレコードの更新に失敗しました。\n";
-    print STDERR "=== RESPONSE DATA ===\n";
-    print STDERR "$update_body\n";
-    print STDERR "=== REQUEST DATA ===\n";
-    print STDERR "$json\n";
+if ($succeed == 1) {
+    exit 0;
+} else {
     exit 11;
 }
-
-print "=== UPDATED DATA ===\n";
-print "$update_body\n";

@@ -18,9 +18,9 @@ use VdDnsUtil;
 use DnsUtil;
 use VdUtil;
 
-my $VERSION = '2025-05-28';
+my $VERSION = '2026-05-28';
 
-VdUtil::print_program_title("Value-Domain DNS-01 challenge Authenticator", $VERSION);
+VdUtil::print_program_title("Value-Domain DNS-01 challenge Authenticator", $VERSION, $VdDnsUtil::VERSION, $DnsUtil::VERSION);
 
 my ($apikey, $root_domain, $argv_ttl) = @ARGV;
 
@@ -54,18 +54,7 @@ my $json = encode_json({
 
 # ValueDomainAPIにレコードの更新要求を出す
 my ($update_body, $update_code) = VdDnsUtil::request_update_records($apikey, $root_domain, $json);
-
-if ($update_code != 200) {
-    print STDERR "CODE:$update_code\tDNSレコードの更新に失敗しました。\n";
-    print STDERR "=== RESPONSE DATA ===\n";
-    print STDERR "$update_body\n";
-    print STDERR "=== REQUEST DATA ===\n";
-    print STDERR "$json\n";
-    exit 11;
-}
-
-print "=== UPDATED DATA ===\n";
-print "$update_body\n";
+VdUtil::handle_update_response($update_code, $update_body, $json);
 
 # 全権威DNSにTXTレコードが反映されたかをポーリングで確認する
 # Let's Encryptの検証より前に確実に反映を見届けるため、ローカルリゾルバではなく
