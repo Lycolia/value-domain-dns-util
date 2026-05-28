@@ -67,7 +67,7 @@ if ($update_result == 0) {
 # 全権威DNSにTXTレコードが反映されたかをポーリングで確認する
 # Let's Encryptの検証より前に確実に反映を見届けるため、ローカルリゾルバではなく
 # ルートドメインの権威DNSへ直接問い合わせる
-my @auth_ns     = DnsUtil::dig_value($root_domain, 'NS');
+my @auth_ns = DnsUtil::dig_value($root_domain, 'NS');
 
 unless (@auth_ns) {
     print STDERR "$root_domain の権威DNSサーバの取得に失敗しました。\n";
