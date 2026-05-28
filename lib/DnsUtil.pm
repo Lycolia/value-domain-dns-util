@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Net::DNS::Dig;
 
-our $VERSION = '0.1.0';
+our $VERSION = '2025-05-28';
 
 # DNSレコードからレコードタイプに紐づく値を取得するユーティリティ関数
 # 引数:

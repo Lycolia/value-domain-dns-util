@@ -12,10 +12,10 @@ use JSON::PP;
 use FindBin qw($Bin);
 use lib "$Bin/lib";
 use VdDnsUtil;
+use VdUtil;
 
-my $VERSION = '0.2.0';
+my $VERSION = '2025-05-28';
 
-# vd-dcrのように共通化すると不要な依存関係を引っ張ってきてしまうため、ベタで実装している
 print "=== Value-Domain DDNS tool ===\n";
 print "VERSION: $VERSION\n";
 print "VdDnsUtil: ${VdDnsUtil::VERSION}\n";
@@ -28,20 +28,8 @@ unless ($apikey && $root_domain && $new_ip && @hostnames) {
 
 # ValueDomainAPIからレコードを取得
 my ($get_body, $get_code) = VdDnsUtil::request_get_records($apikey, $root_domain);
-
-if ($get_code != 200) {
-    print STDERR "CODE:$get_code\tDNSレコードの取得に失敗しました。\n";
-    print STDERR "$get_body\n";
-    exit 10;
-}
-
-print "=== SOURCE DATA ===\n";
-print "$get_body\n";
-
-my $get_json = decode_json($get_body);
-my $source_records = $get_json->{results}{records};
-my $source_ttl = $get_json->{results}{ttl};
-my $source_ns_type = $get_json->{results}{ns_type};
+VdUtil::print_source_data($get_body);
+my ($source_records, $source_ttl, $source_ns_type) = VdUtil::parse_dns_response($get_body, $get_code);
 
 # 指定ホスト名ごとにAレコードを新しいIPに置換
 my $new_records = $source_records;
@@ -69,7 +57,10 @@ my ($update_body, $update_code) = VdDnsUtil::request_update_records($apikey, $ro
 
 if ($update_code != 200) {
     print STDERR "CODE:$update_code\tDNSレコードの更新に失敗しました。\n";
+    print STDERR "=== RESPONSE DATA ===\n";
     print STDERR "$update_body\n";
+    print STDERR "=== REQUEST DATA ===\n";
+    print STDERR "$json\n";
     exit 11;
 }
 

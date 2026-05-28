@@ -1,21 +1,22 @@
-package DcrUtil;
+package VdUtil;
 
 use strict;
 use warnings;
 use JSON::PP;
-use VdDnsUtil;
-use DnsUtil;
+
+our $VERSION = '2025-05-28';
 
 # 起動時のプログラム名とバージョン情報を標準出力に表示する
 # 引数:
 #   $title   : プログラムタイトル
-#   $version : プログラムバージョン
+#   $prg_ver : プログラムバージョン
 sub print_program_title {
-    my ($title, $version) = @_;
+    my ($title, $prg_ver, $vd_dns_util_ver, $dns_util_ver) = @_;
     print "=== $title ===\n";
-    print "VERSION: $version\n";
-    print "VdDnsUtil: ${VdDnsUtil::VERSION}\n";
-    print "DnsUtil: ${DnsUtil::VERSION}\n";
+    print "VERSION: $prg_ver\n";
+    print "VdDnsUtil: $vd_dns_util_ver\n";
+    print "DnsUtil: $dns_util_ver\n";
+    print "VdUtil: $VERSION\n";
 }
 
 # _acme-challenge用のドメイン文字列を生成する
@@ -28,8 +29,9 @@ sub create_acme_domain {
     my ($root_domain, $target_domain) = @_;
     if ($target_domain =~ /^(.+)\.\Q$root_domain\E$/) {
         return "_acme-challenge.$1";
+    } else {
+        return "_acme-challenge";
     }
-    return "_acme-challenge";
 }
 
 # Value-Domain DNS APIのGETレスポンスボディを標準出力に表示する
@@ -50,19 +52,22 @@ sub print_source_data {
 #   $records : DNSレコード本文（複数行文字列）
 #   $ttl     : APIから返ってきたTTL
 #   $ns_type : APIから返ってきたns_type
-sub parse_get_response {
+sub parse_dns_response {
     my ($body, $code) = @_;
-    if ($code != 200) {
+
+    if ($code == 200) {
+        my $json = decode_json($body);
+
+        return (
+            $json->{results}{records},
+            $json->{results}{ttl},
+            $json->{results}{ns_type},
+        );
+    } else {
         print STDERR "CODE:$code\tDNSレコードの取得に失敗しました。\n";
         print STDERR "$body\n";
         die "request_get_records failed\n";
     }
-    my $json = decode_json($body);
-    return (
-        $json->{results}{records},
-        $json->{results}{ttl},
-        $json->{results}{ns_type},
-    );
 }
 
 # Certbotから渡される環境変数を取得する
@@ -72,19 +77,6 @@ sub read_certbot_env {
     my $certbot_domain     = $ENV{CERTBOT_DOMAIN}     or die "CERTBOT_DOMAIN is not set\n";
     my $certbot_validation = $ENV{CERTBOT_VALIDATION} or die "CERTBOT_VALIDATION is not set\n";
     return ($certbot_domain, $certbot_validation);
-}
-
-# スクリプト引数のTTLがあればそれを、なければソースのTTLを使い、120未満なら120に補正する
-# 引数:
-#   $argv_ttl   : スクリプト引数で指定されたTTL（未指定ならundef）
-#   $source_ttl : APIのレスポンスから取得したTTL
-# 戻り値:
-#   補正後のTTL
-sub adjust_ttl {
-    my ($argv_ttl, $source_ttl) = @_;
-    return defined $argv_ttl
-        ? VdDnsUtil::adjust_ttl($argv_ttl + 0)
-        : VdDnsUtil::adjust_ttl($source_ttl + 0);
 }
 
 1;

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use HTTP::Tiny;
 
-our $VERSION = '0.2.0';
+our $VERSION = '2025-05-28';
 
 my $API_BASE_URL = 'https://api.value-domain.com/v1/domains';
 
@@ -36,9 +36,11 @@ sub request_get_records {
 #   一致したレコード行。なければ空文字
 sub find_first_record {
     my ($records, $subject) = @_;
+
     for my $line (split /\n/, $records) {
         return $line if $line =~ /^\Q$subject\E\s/;
     }
+
     return '';
 }
 
@@ -50,6 +52,7 @@ sub find_first_record {
 #   末尾に$recordを追加したレコード
 sub append_record {
     my ($records, $record) = @_;
+
     return "$records\n$record";
 }
 
@@ -64,9 +67,11 @@ sub append_record {
 sub replace_record {
     my ($records, $subject, $replacement) = @_;
     my @lines = split /\n/, $records;
+
     for my $line (@lines) {
         $line = $replacement if $line =~ /^\Q$subject\E\s/;
     }
+
     return join "\n", @lines;
 }
 
@@ -79,8 +84,10 @@ sub replace_record {
 #   $subjectにマッチした行を削除したレコード
 sub delete_records {
     my ($records, $subject) = @_;
+
     my @lines = split /\n/, $records;
     my @filtered = grep { $_ ne $subject } @lines;
+
     return join "\n", @filtered;
 }
 
@@ -93,6 +100,7 @@ sub delete_records {
 #   $ttlが120未満なら120、そうでなければ$ttl
 sub adjust_ttl {
     my ($ttl) = @_;
+
     return $ttl < 120 ? 120 : $ttl;
 }
 
@@ -109,6 +117,7 @@ sub request_update_records {
     my ($apikey, $root_domain, $json) = @_;
     my $http = HTTP::Tiny->new;
     my $url = "$API_BASE_URL/$root_domain/dns";
+
     my $resp = $http->request('PUT', $url, {
         headers => {
             'Authorization' => "Bearer $apikey",
@@ -116,6 +125,7 @@ sub request_update_records {
         },
         content => $json,
     });
+
     return ($resp->{content}, $resp->{status});
 }
 
