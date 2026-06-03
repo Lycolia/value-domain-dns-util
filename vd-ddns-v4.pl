@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 # Value-DomainでIPv4向け複数ドメインへのDDNSを自動化するためのツール
 # vd-ddns-v4.pl <apikey> <root-domain> <new-ipv4> [hostname...]
+# Apexドメインはhostnameを@で指定する
 #
 # 指定したホスト名のAレコードのIPv4アドレスを<new-ipv4>に一括更新する
 # [hostname...] は $get_json->{results}{records} 内の "a <hostname> <ip>" の

@@ -2,6 +2,8 @@
 
 指定したルートドメインのDNSレコードから、指定したホスト名のAレコードを検索し、IPv4アドレスを一括更新する。
 
+新規登録機能はないため、あらかじめレコードを登録しておくこと。
+
 ## 動作確認環境
 
 | Env                  | Ver             |
@@ -68,5 +70,6 @@
    /path/to/vd-ddns-v4.pl x9FwKp3RmT7vLnYq2sUcBj6hXoDiA8gZeJrN4aMbQV5tWlCy0EdGuHfS1oIxP9wKmR7nTvLjYq3sUcBp6hXoZiD2gJeKr4aMbQkV example.com 22.33.44.55 hoge fuga piyo
    ```
    上記の例では `hoge.example.com`、`fuga.example.com`、`piyo.example.com` のAレコードを `22.33.44.55` に更新する。
+   Apexドメインを対象にする場合はhostname部に`@`を指定する。
 
 指定したホスト名が既存レコードに存在しない場合、そのホスト名はスキップされ標準エラーに警告を出力する（新規追加はしない）。
