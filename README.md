@@ -1,1 +1,1 @@
-[**このリポジトリは私のサイトに移動しました**]([https://git.lycolia.info/Lycolia/value-domain-dns-util](https://lycolia.info/software/))
+[**このリポジトリの内容は私のサイトに移動しました**](https://lycolia.info/software/)
